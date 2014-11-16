@@ -15,8 +15,10 @@ class DXSpot(object):
         callsign = words[4]
         last_word = words[len(words)-1]
         iterator=1
-        if last_word[-1] != "Z":
+        print(last_word[-1])
+        if len(last_word) != 5:
             iterator+=1
+        print(iterator)
         remark = ' '.join(words[5:len(words)-iterator])
         time_list = re.findall(r'\d+', words[len(words)-iterator])
         time = time_list[0]
