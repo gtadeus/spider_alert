@@ -1,3 +1,2 @@
 #FilterID	Date		Time	Frequency	Band	Callsign	Type	Remark
-1416005281	2014-11-15	18:19	21266.0,221200	15m,60m	*		*	*
-1416078924	2014-11-15	20:15	*		*	EH8FPR		SSB	*
+1416005281	2014-11-15	18:19	*           *	    *		    *	    *
