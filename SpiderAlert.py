@@ -35,7 +35,7 @@ def printDX():
 def main(argv):
     message = ''
     try:
-        opts, args = getopt.getopt(argv,"hm:",["message="])
+        opts, args = getopt.getopt(argv,"hsm:",["message="])
     except getopt.GetoptError:
         #print 'SpiderAlert.py -m "DXSpot Message String"'
         print('SpiderAlert.py -m "DXSpot Message String"')
@@ -45,8 +45,12 @@ def main(argv):
             #print 'SpiderAlert.py -m "DXSpot Message String"'
             print('SpiderAlert.py -m "DXSpot Message String"')
             sys.exit()
+        if opt == '-s':
+            message = "DX de EA3EJ:     21266.0  EH8FPR       Faro Punta Rasca              1441Z"
         elif opt in ("-m", "--message"):
             message = arg
+        
+            
             
     #message=re.sub('[^A-Za-z0-9 ]+', '', message)
     f0=open('debug.txt', 'a')
