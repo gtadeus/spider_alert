@@ -47,6 +47,8 @@ def main(argv):
             sys.exit()
         elif opt in ("-m", "--message"):
             message = arg
+            
+    #message=re.sub('[^A-Za-z0-9 ]+', '', message)
     f0=open('debug.txt', 'a')
     f0.write(message)
     f0.close
