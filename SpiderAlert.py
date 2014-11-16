@@ -3,6 +3,7 @@ import sys, getopt
 import re
 import Filter as fi
 import DXSpot as dxs
+import datetime
         
 def getFilter(filterfile):
     f = open(filterfile, 'r')
@@ -53,7 +54,22 @@ def main(argv):
     filterList = getFilter("filter/filter.txt")
     result = dx.compareFilterList(filterList)
     if result == True:
+        #print "filter hit!"
         print("filter hit!")
+        
+        fd = open('alert/alert.txt','a')
+        row=[]
+        row.append(str(datetime.datetime.utcnow().strftime('%Y-%m-%d')))
+        row.append(str(dx.time))
+        row.append(str(dx.frequency))
+        row.append(dx.callsign)
+        row.append(dx.getBand(dx.frequency))
+        row.append(dx.getTransmissionType(dx.frequency))
+        row.append(dx.remark)
+        row.append(','.join(dx.filterHitList))
+        row.append('\n')
+        fd.write(';'.join(row))
+        fd.close()
         print(dx.filterHitList)
     else:
         print("no hit!")
