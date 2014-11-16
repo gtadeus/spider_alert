@@ -11,7 +11,7 @@ def getFilter(filterfile):
     for line in f:
         if line[0] != '#':
             line = line.strip()
-            linelist = re.split(r'\t+',line)
+            linelist = re.split(r';',line)
             filterList.append(fi.Filter(linelist[0], linelist[1], linelist[2], linelist[3], linelist[4], linelist[5], linelist[6], linelist[7]))
     return filterList        
         
