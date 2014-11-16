@@ -7,4 +7,3 @@ do
     ./SpiderAlert.py -m \""${line%?}"\" >/dev/null;
   fi
 done
-~

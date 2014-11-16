@@ -13,8 +13,12 @@ class DXSpot(object):
             return
         frequency = float(words[3])
         callsign = words[4]
-        remark = ' '.join(words[5:len(words)-1])
-        time_list = re.findall(r'\d+', words[len(words)-1])
+        last_word = words[len(words)-1]
+        iterator=1
+        if last_word[-1] != "Z":
+            iterator+=1
+        remark = ' '.join(words[5:len(words)-iterator])
+        time_list = re.findall(r'\d+', words[len(words)-iterator])
         time = time_list[0]
         
         self.frequency=frequency
