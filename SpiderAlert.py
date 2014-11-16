@@ -47,7 +47,10 @@ def main(argv):
             sys.exit()
         elif opt in ("-m", "--message"):
             message = arg
-    print(message)
+    f0=open('debug.txt', 'a')
+    f0.write(message)
+    f0.close
+    
     dx = dxs.DXSpot(message)
     if dx.errorState != 0:
         return
