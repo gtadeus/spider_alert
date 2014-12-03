@@ -1,10 +1,8 @@
 #!/usr/bin/python
 import smtplib
 import datetime
-try:
-    from email.mime.text import MIMEText
-except ImportError:
-    import email.MIMEText import MIMEText   
+from email.mime.text import MIMEText
+
 
 # we have several types of mail 
 # alerts and command confirmations

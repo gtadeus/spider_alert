@@ -5,10 +5,7 @@ import re
 import imaplib
 import getpass
 import email
-try:
-    import email.header
-except ImportError:
-    import email.Header
+import email.header
 import datetime
 import os
 import time
