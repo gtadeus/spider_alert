@@ -14,12 +14,12 @@ class DXSpot(object):
         frequency = float(words[3])
         callsign = words[4]
         last_word = words[len(words)-1]
-        print(last_word)
+        #print(last_word)
         if re.match('^[0-9]{4}Z', last_word):
             iterator=1
         else:
             iterator=2
-        print(iterator)
+        #print(iterator)
         remark = ' '.join(words[5:len(words)-iterator])
         time_list = re.findall(r'\d+', words[len(words)-iterator])
         time = time_list[0]
@@ -61,12 +61,12 @@ class DXSpot(object):
         for val in value_list:
             filtered = fnmatch.filter(list, val)
             result+=len(filtered)
-        print(list)
-        print(value_list)
+        #print(list)
+        #print(value_list)
         #print(filtered)
         
         #result=len(filtered)
-        print(result)
+        #print(result)
         return result
     def compare(self, fi):
         compareResult = False

@@ -4,6 +4,8 @@ import re
 import Filter as fi
 import DXSpot as dxs
 import datetime
+import glob
+import ntpath
         
 def getFilter(filterfile):
     f = open(filterfile, 'r')
@@ -60,28 +62,36 @@ def main(argv):
     dx = dxs.DXSpot(message)
     if dx.errorState != 0:
         return
-    filterList = getFilter("filter/filter.txt")
-    result = dx.compareFilterList(filterList)
-    if result == True:
-        #print "filter hit!"
-        print("filter hit!")
-        
-        fd = open('alert/alert.txt','a')
-        row=[]
-        row.append(str(datetime.datetime.utcnow().strftime('%Y-%m-%d')))
-        row.append(str(dx.time))
-        row.append(str(dx.frequency))
-        row.append(dx.callsign)
-        row.append(dx.getBand(dx.frequency))
-        row.append(dx.getTransmissionType(dx.frequency))
-        row.append(dx.remark)
-        row.append(','.join(dx.filterHitList))
-        row.append('\n')
-        fd.write(';'.join(row))
-        fd.close()
-        print(dx.filterHitList)
-    else:
-        print("no hit!")
+    filterFileList = glob.glob("filter/*@*")
+    
+    for filterFile in filterFileList:
+        filterList = getFilter(filterFile)
+        username = ntpath.basename(filterFile)
+        result = dx.compareFilterList(filterList)
+        #filterList = getFilter("filter/filter.txt")
+        #result = dx.compareFilterList(filterList)
+        if result == True:
+            #print "filter hit!"
+            print("filter hit " + username)
+            
+            fd = open('alert/'+username,'a')
+            row=[]
+            row.append(str(datetime.datetime.utcnow().strftime('%Y-%m-%d')))
+            row.append(str(dx.time))
+            row.append(str(dx.frequency))
+            row.append(dx.callsign)
+            row.append(dx.getBand(dx.frequency))
+            row.append(dx.getTransmissionType(dx.frequency))
+            row.append(dx.remark)
+            row.append(','.join(dx.filterHitList))
+            row.append('\n')
+            row_list = ';'.join(row)
+            #row_list=row_list[:-1]
+            fd.write(row_list)
+            fd.close()
+            print(dx.filterHitList)
+        else:
+            print("no hit!")
 
 if __name__ == "__main__":
    main(sys.argv[1:])
