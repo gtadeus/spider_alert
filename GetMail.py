@@ -1,11 +1,5 @@
 #!/usr/bin/python
-#
-# Very basic example of using Python and IMAP to iterate over emails in a
-# gmail folder/label.  This code is released into the public domain.
-#
-# RKI July 2013
-# http://www.voidynullness.net/blog/2013/07/25/gmail-email-with-python-via-imap/
-#
+
 import sys
 import re
 import imaplib
@@ -127,8 +121,9 @@ def process_mailbox(M):
                     sm.sendErrorMail("user not registered", from_mail)
                 else:
                     num_filters = sum(1 for line in open("filter/"+from_mail))
-                    with open("filter/"+from_mail, 'r') as content_file:
-                        content = content_file.read()
+                    content_file=open("filter/"+from_mail, 'r') 
+                    content = content_file.read()
+                    content_file.close()
                     info = list()
                     info.append(str(num_filters))
                     info.append(content)
