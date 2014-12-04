@@ -36,7 +36,7 @@ class SendMail(object):
         
         #confirm filter delete
         if "filter deleted" in subject:
-            self.payload = "FilterID " + info +" deleted successfully"
+            self.payload = "FilterID " + info[0] +" deleted successfully\n\n" + "FilterID;Date & Time created (local);Frequency;Band;Callsign;Type;Remark\n" + info[1]
         #confirm new user
         if "new user registered" in subject:
             self.payload = "New user " + info + " registered"

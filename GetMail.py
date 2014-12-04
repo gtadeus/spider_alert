@@ -175,9 +175,14 @@ def process_mailbox(M):
                         if not filterID in line:
                             f.write(line)
                             line_counter+=1
+                        else:
+                            deleted_filter_line=line
                     f.close()
                     if line_counter < filterfile_before:
-                        sm.sendConfirmationMail("filter deleted", filterID)
+                        info=[]
+                        info.append(filterID)
+                        info.append(deleted_filter_line)
+                        sm.sendConfirmationMail("filter deleted", info)
                     else:
                         sm.sendErrorMail("filter not found", filterID)
             elif "help" in subject:
