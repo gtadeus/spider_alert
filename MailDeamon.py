@@ -16,6 +16,7 @@ def processAlerts():
     filterID_col_nr=7
     for alertFile in alertFileList:
         username = ntpath.basename(alertFile)
+        
         sm = SendMail.SendMail(username)
         file_alert = open(alertFile, "r")
         csv_reader = reader(file_alert,  delimiter=';')
@@ -55,10 +56,15 @@ def processAlerts():
             selection = [row for row in csv_reader_new if row[filterID_col_nr] == filterID]
             print(len(selection))
             print(selection)
+            file_filter = open("filter/"+username, "r")
+            csv_reader_filter = reader(file_filter,  delimiter=';')
+            for row in csv_reader_filter:
+                if filterID in row:
+                    original_filter_row = ";".join(row)
             msg = ""
             for s in selection:
-                    msg += "Date/Time: " + s[0] + " " + s[1] + "\nFrequency: " + s[2] + "\nCallsign: " + s[3] + "\nBand: " + s[4] + "\nType: " + s[5] + "\nRemark: " + s[6] + "\nFilterID: " + s[7] + "\n\n"
-                    
+                    msg += "Date/Time (UTC): " + s[0] + " " + s[1] + "\nFrequency: " + s[2] + "\nCallsign: " + s[3] + "\nBand: " + s[4] + "\nType: " + s[5] + "\nRemark: " + s[6] + "\n\nFilterID=" + s[7] + "\n\nFilter settings:\nFilterID;Created on Date & Time (local);Frequency;Band;Callsign;Type;Remark\n"+original_filter_row+"\n\n**********"
+            msg = msg+"\n\nTo delete this filter hit \"Reply\" and change subject to \"[SpiderAlert] delete filter\""        
             sm.sendConfirmationMail("DX Spot alert", msg)
             #for selected_filterID in selection:
             #put all alerts into one mail

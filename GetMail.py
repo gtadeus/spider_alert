@@ -117,7 +117,7 @@ def process_mailbox(M):
                             
                     x=fi.Filter(filterID,filterDate,filterTime,filterFrequency,filterBand,filterCallsign,filterType,filterRemark)
                     x.writeFilter(from_mail)
-                    info = "ID="+filterID+"\nDate="+filterDate+"\nTime="+filterTime+"\nFrequency="+filterFrequency+"\nBand="+filterBand+"\nCallsign="+filterCallsign+"\nType="+filterType+"\nRemark="+filterRemark
+                    info = "ID="+filterID+"\n\nCreated on:\nDate="+filterDate+"\nLocal Time="+filterTime+"\nFrequency="+filterFrequency+"\nBand="+filterBand+"\nCallsign="+filterCallsign+"\nType="+filterType+"\nRemark="+filterRemark
                     sm.sendConfirmationMail("filter set", info)
                 
             elif "register user" in subject:
@@ -176,6 +176,8 @@ def process_mailbox(M):
                         sm.sendConfirmationMail("filter deleted", filterID)
                     else:
                         sm.sendErrorMail("filter not found", filterID)
+            elif "help" in subject:
+                sm.sendErrorMail("help", "")
             else:
                 info = list()
                 info.append(subject)
