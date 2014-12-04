@@ -50,7 +50,7 @@ class SendMail(object):
         
         #send help
         if "help" in subject:
-            self.payload = "SpiderAlert - Email Header Commands:\n\n1.)[SpiderAlert] register user\n\n2.)[SpiderAlert] set filter\n\n3.)[SpiderAlert] delete filter\n\n[SpiderAlert] list filter\n\n[SpiderAlert] help"
+            self.payload = "SpiderAlert - Email Header Commands:\n\n1.) [SpiderAlert] register user\n\n2.) [SpiderAlert] set filter\n\n3.) [SpiderAlert] delete filter\n\n4.) [SpiderAlert] list filter\n\n5.) [SpiderAlert] help"
         self.subject = subject
         self.initMailText()
         return
@@ -62,7 +62,7 @@ class SendMail(object):
         if "filter not found" in subject:
             self.payload = "ERROR: Trying to delete FilterID " + info + " Filter not found\n\nTo get a list of all filters please send a mail with the subject: [SpiderAlert] list filter"
         if "command not recognized" in subject:
-            self.payload = "ERROR: command not recognized\nSubject:\n" + info[0] + "\n\nMessage:\n" + info[1] + "\n\nTo get a list of the commands, please send an email with the subject: [SpiderAlert] help"
+            self.payload = "ERROR: command not recognized\nSubject:\n" + str(info[0]) + "\n\nMessage:\n" + str(info[1]) + "\n\nTo get a list of the commands, please send an email with the subject: [SpiderAlert] help"
            
         self.subject = "ERROR: " + subject
         self.initMailText()
