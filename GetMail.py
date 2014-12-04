@@ -151,17 +151,20 @@ def process_mailbox(M):
                 if len(filterFileList) != 1:
                     sm.sendErrorMail("user not registered", from_mail)
                 else:
-                    command_list=msg_body.split('\r\n')
+                    command_list=text_content.split('\r\n')
                     command_list = [x for x in command_list if x]
                     for command in command_list:
-                        token = command.lower().split('=')[1]
-                        token = token.replace(';', ',')
-                        if token.startswith('"') and token.endswith('"'):
-                            token = token[1:-1]
-                        if token.endswith(";") or token.endswith(","):
-                            token = token[0:-1]   
-                        if "filterid" in command.lower():
-                            filterID = token
+                        try:
+                            token = command.lower().split('=')[1]
+                            token = token.replace(';', ',')
+                            if token.startswith('"') and token.endswith('"'):
+                                token = token[1:-1]
+                            if token.endswith(";") or token.endswith(","):
+                                token = token[0:-1]   
+                            if "filterid" in command.lower():
+                                filterID = token
+                        except IndexError:
+                            end=0
                     f = open("filter/"+from_mail, "r")
                     lines = f.readlines()
                     filterfile_before=len(lines)
@@ -178,7 +181,7 @@ def process_mailbox(M):
                     else:
                         sm.sendErrorMail("filter not found", filterID)
             elif "help" in subject:
-                sm.sendErrorMail("help", "")
+                sm.sendConfirmationMail("help", "")
             else:
                 info = list()
                 info.append(subject)
