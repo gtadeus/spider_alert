@@ -31,7 +31,7 @@ def process_mailbox(M):
             print("ERROR getting message" + num)
             return
         
-        #python2 msg = email.message_from_string(data[0][1])
+        #msg = email.message_from_string(data[0][1])  #python2?
         msg = email.message_from_bytes(data[0][1])
         
         decode = email.header.decode_header(msg['Subject'])[0]
@@ -54,13 +54,24 @@ def process_mailbox(M):
         if "[spideralert]" in subject:
             delete = True
             sm = SendMail.SendMail(from_mail)
-            #print 'Message %s: %s' % (num, subject)
+            print("Message nr."+ str(int(num)))
             msg_body = msg.get_payload()
+            print("From: " + from_mail)
             print(subject)
             #print 'Raw Date:', msg['Date']
-            #print(msg['Date'])
+            
             # Now convert to local date-time
             
+            for part in msg.walk():
+                if part.get_content_type() == 'text/plain':
+                    print("text/plain:\n\n" + part.get_payload()) # prints the raw text
+                    text_content = part.get_payload()
+                #if part.get_content_type() == 'text/html':
+                    #print("text/html:\n\n" + part.get_payload()) # prints the raw text
+                    #text_content = part.get_payload()
+            #print(text_content)
+            #print(type(text_content))
+            #return
             if "set filter" in subject:
                 filterFileList = glob.glob("filter/"+from_mail)
                 if len(filterFileList) != 1:
@@ -69,7 +80,9 @@ def process_mailbox(M):
                 else:
                     #msg_body = msg_body.replace('\r\n', ';')
                     #command_list=msg_body.split(';')
-                    command_list=msg_body.split('\r\n')
+                    #print(type(msg_body))
+                    #print(msg_body.as_string())
+                    command_list=text_content.split('\r\n')
                     command_list = [x for x in command_list if x]
                     print(command_list)
                     
@@ -80,23 +93,27 @@ def process_mailbox(M):
                     filterRemark="*"
 
                     for command in command_list:
-                        token = command.lower().split('=')[1]
-                        token = token.replace(';', ',')
-                        if token.startswith('"') and token.endswith('"'):
-                            token = token[1:-1]
-                        if token.endswith(";") or token.endswith(","):
-                            token = token[0:-1]   
-                        if "frequency" in command.lower():
-                            filterFrequency = token
-                        if "band" in command.lower():
-                            filterBand = token
-                            print(filterBand)
-                        if "callsign" in command.lower():
-                            filterType = token.upper()
-                        if "type" in command.lower():
-                            filterType = token.upper()
-                        if "remark" in command.lower():
-                            filterRemark = token
+                        try:
+                            token = command.lower().split('=')[1]
+                            token = token.replace(';', ',')
+                            if token.startswith('"') and token.endswith('"'):
+                                token = token[1:-1]
+                            if token.endswith(";") or token.endswith(","):
+                                token = token[0:-1]   
+                            #print(re.sub('<[^>]*>', '', token))
+                            if "frequency" in command.lower():
+                                filterFrequency = token
+                            if "band" in command.lower():
+                                filterBand = token
+                                print(filterBand)
+                            if "callsign" in command.lower():
+                                filterCallsign = token.upper()
+                            if "type" in command.lower():
+                                filterType = token.upper()
+                            if "remark" in command.lower():
+                                filterRemark = token
+                        except IndexError:
+                            end=0
                             
                     x=fi.Filter(filterID,filterDate,filterTime,filterFrequency,filterBand,filterCallsign,filterType,filterRemark)
                     x.writeFilter(from_mail)

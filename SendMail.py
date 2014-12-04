@@ -42,11 +42,15 @@ class SendMail(object):
             self.payload = "New user " + info + " registered"
         # list filter
         if "list filter" in subject:
-            self.payload = "Found " + info[0] + " filter(s)\n\n" + info[1]
+            self.payload = "Found " + info[0] + " filter(s)\n\n" + "FilterID;Date;Time (local);Frequency;Band;Callsign;Type;Remark\n" + info[1]
         #DX Spider Alert
         if "DX Spot alert" in subject:
-            self.payload = "DX Spot:\n\n"+info
+            self.payload = "DX Spot(s):\n\n"+info
         #confirm user deleted
+        
+        #send help
+        if "help" in subject:
+            self.payload = "SpiderAlert - Email Header Commands:\n\n1.)[SpiderAlert] register user\n\n2.)[SpiderAlert] set filter\n\n3.)[SpiderAlert] delete filter\n\n[SpiderAlert] list filter"
         self.subject = subject
         self.initMailText()
         return
@@ -67,7 +71,7 @@ class SendMail(object):
         s = smtplib.SMTP(self.mailserver) 
         s.login(self.sender, self.passwd) 
         
-        s.sendmail(self.sender, self.receiver, self.msg.as_string())
+        #s.sendmail(self.sender, self.receiver, self.msg.as_string())
         s.quit()
         return
 
