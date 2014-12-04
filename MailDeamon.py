@@ -63,7 +63,7 @@ def processAlerts():
                     original_filter_row = ";".join(row)
             msg = ""
             for s in selection:
-                    msg += "Date/Time (UTC): " + s[0] + " " + s[1] + "\nFrequency: " + s[2] + "\nCallsign: " + s[3] + "\nBand: " + s[4] + "\nType: " + s[5] + "\nRemark: " + s[6] + "\n\nFilterID=" + s[7] + "\n\nFilter settings:\nFilterID;Created on Date & Time (local);Frequency;Band;Callsign;Type;Remark\n"+original_filter_row+"\n\n**********"
+                    msg += "Date/Time (UTC): " + s[0] + " " + s[1] + "\nFrequency: " + s[2] + "\nCallsign: " + s[3] + "\nBand: " + s[4] + "\nType: " + s[5] + "\nRemark: " + s[6] + "\n\nFilterID=" + s[7] + "\n\nFilter settings:\nFilterID;Created on Date & Time (local);Frequency;Band;Callsign;Type;Remark\n"+original_filter_row+"\n\n**********\n\n"
             msg = msg+"\n\nTo delete this filter hit \"Reply\" and change subject to \"[SpiderAlert] delete filter\""        
             sm.sendConfirmationMail("DX Spot alert", msg)
             #for selected_filterID in selection:

@@ -117,8 +117,8 @@ def process_mailbox(M):
                             
                     x=fi.Filter(filterID,filterDate,filterTime,filterFrequency,filterBand,filterCallsign,filterType,filterRemark)
                     x.writeFilter(from_mail)
-                    info = "FilterID="+filterID+"\n\nCreated on:\nDate="+filterDate+"\nLocal Time="+filterTime+"\nFrequency="+filterFrequency+"\nBand="+filterBand+"\nCallsign="+filterCallsign+"\nType="+filterType+"\nRemark="+filterRemark
-                    info = info+"\n\nTo delete this filter hit \"Reply\" and change subject to \"[SpiderAlert] delete filter\""
+                    info = "FilterID="+filterID+"\n\nCreated on:\nDate="+filterDate+"\nLocal Time="+filterTime+"\n\nFrequency="+filterFrequency+"\nBand="+filterBand+"\nCallsign="+filterCallsign+"\nType="+filterType+"\nRemark="+filterRemark
+                    info = info+"\n\n********\n\nTo delete this filter hit \"Reply\" and change subject to \"[SpiderAlert] delete filter\""
                     sm.sendConfirmationMail("filter set", info)
                 
             elif "register user" in subject:
