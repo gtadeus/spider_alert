@@ -57,6 +57,9 @@ class DXSpot(object):
     def checkPattern(self, filter_list, value):
         list = filter_list.split(",")
         value_list=value.split(",")
+        #make to case iinsensitive
+        list = map(str.lower, list)
+        value_list = map(str.lower, value_list)
         result=0
         for val in value_list:
             filtered = fnmatch.filter(list, val)
