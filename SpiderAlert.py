@@ -76,6 +76,7 @@ def main(argv):
             
             fd = open('alert/'+username,'a')
             row=[]
+            row.append(dx.DXfrom)
             row.append(str(datetime.datetime.utcnow().strftime('%Y-%m-%d')))
             row.append(str(dx.time))
             row.append(str(dx.frequency))

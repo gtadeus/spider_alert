@@ -11,6 +11,7 @@ class DXSpot(object):
             print("error, wrong DX String")
             self.errorState=1
             return
+        DXfrom = words[2].replace(':','');
         frequency = float(words[3])
         callsign = words[4]
         last_word = words[len(words)-1]
@@ -24,6 +25,7 @@ class DXSpot(object):
         time_list = re.findall(r'\d+', words[len(words)-iterator])
         time = time_list[0]
         
+        self.DXfrom=DXfrom
         self.frequency=frequency
         self.callsign=callsign
         self.remark=remark

@@ -2,6 +2,7 @@
 import smtplib
 import datetime
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 
 # we have several types of mail 
@@ -10,17 +11,24 @@ class SendMail(object):
     def __init__(self, receiver):
         self.sender = "spider_alert@gmx.de" 
         self.receiver = receiver 
-        self.mailserver = "mail.gmx.net"
+        self.mailserver = "mail.gmx.net:587"
         self.passwd = "dxspider"
         self.payload = ""
+        self.payloadHTML = ""
         self.subject = ""
-        self.msg =""
+        self.msg = MIMEMultipart('alternative')
         return
     def initMailText(self):
-        self.msg = MIMEText(self.payload)
         self.msg['Subject'] = "[SpiderAlert] "+self.subject
         self.msg['From'] = self.sender
-        self.msg['To'] = self.receiver 
+        self.msg['To'] = self.receiver
+        
+        part1 = MIMEText(self.payload, 'plain')
+        part2 = MIMEText(self.payloadHTML, 'html')
+        
+        self.msg.attach(part1)
+        self.msg.attach(part2)
+         
         self.send()
         return
     def sendAlert(self, AlertList):
@@ -45,7 +53,8 @@ class SendMail(object):
             self.payload = "Found " + info[0] + " filter(s)\n\n" + "FilterID;Date & Time created (local);Frequency;Band;Callsign;Type;Remark\n" + info[1]
         #DX Spider Alert
         if "DX Spot alert" in subject:
-            self.payload = "DX Spot(s):\n\n"+info
+            self.payload = "DX Spot(s):\n\n"+info[0]
+            self.payloadHTML = info[1]
         #confirm user deleted
         
         #send help
@@ -69,10 +78,16 @@ class SendMail(object):
         return
     def send(self):
         s = smtplib.SMTP(self.mailserver) 
-        s.login(self.sender, self.passwd) 
+        try:
+            #print(self.sender + " " + self.passwd)
+            s.login(self.sender, self.passwd) 
         
-        s.sendmail(self.sender, self.receiver, self.msg.as_string())
-        s.quit()
+            s.sendmail(self.sender, self.receiver, self.msg.as_string())
+            s.quit()
+        except smtplib.SMTPException:
+            print("Error: unable to send mail!")
+            import traceback
+            traceback.print_exc();
         return
 
 #if __name__ == "__main__":

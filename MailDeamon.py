@@ -13,10 +13,10 @@ def column(matrix, i):
     return [row[i] for row in matrix]
 def processAlerts():
     alertFileList = glob.glob("alert/*@*")
-    filterID_col_nr=7
+    filterID_col_nr=8
     for alertFile in alertFileList:
         username = ntpath.basename(alertFile)
-        
+        print("username: " + username)
         sm = SendMail.SendMail(username)
         file_alert = open(alertFile, "r")
         csv_reader = reader(file_alert,  delimiter=';')
@@ -58,14 +58,27 @@ def processAlerts():
             print(selection)
             file_filter = open("filter/"+username, "r")
             csv_reader_filter = reader(file_filter,  delimiter=';')
+
             for row in csv_reader_filter:
-                if filterID in row:
-                    original_filter_row = ";".join(row)
+                #if not '#' in row:
+                    if filterID in row:     
+                        original_filter_row = ";".join(row)
             msg = ""
+            msg_html="<html><head></head><body><p>DX Spot(s):<br><br>"
+   
             for s in selection:
-                    msg += "Date/Time (UTC): " + s[0] + " " + s[1] + "\nFrequency: " + s[2] + "\nCallsign: " + s[3] + "\nBand: " + s[4] + "\nType: " + s[5] + "\nRemark: " + s[6] + "\n\nFilterID=" + s[7] + "\n\nFilter settings:\nFilterID;Created on Date & Time (local);Frequency;Band;Callsign;Type;Remark\n"+original_filter_row+"\n\n**********\n\n"
+                    msg += "DX de " + s[0] + ":\nDate/Time (UTC): " + s[1] + " " + s[2] + "\nCallsign: " + s[4] + "\nFrequency: " + s[3]  + "\nBand: " + s[5] + "\nType: " + s[6] + "\nRemark: " + s[7] + "\n\nFilterID=" + s[8] + "\n\nFilter settings:\nFilterID;Created on Date & Time (local);Frequency;Band;Callsign;Type;Remark\n"+original_filter_row+"\n\n**********\n\n"
+                    
+                    msg_html += "DX de " + s[0] + ":<br>Date/Time (UTC): " + s[1] + " " + s[2] + "<br><b>Callsign: " + s[4] + "</b><br>Frequency: " + s[3]  + "<br>Band: " + s[5] + "<br>Type: " + s[6] + "<br>Remark: " + s[7] + "<br><br>FilterID=" + s[8] + "<br><br>Filter settings:<br>FilterID;Created on Date & Time (local);Frequency;Band;Callsign;Type;Remark<br>"+original_filter_row+"<br><br>**********<br><br>"
+                    
             msg = msg+"\n\nTo delete this filter hit \"Reply\" and change subject to \"[SpiderAlert] delete filter\""        
-            sm.sendConfirmationMail("DX Spot alert", msg)
+            msg_html = msg_html+"\n\nTo delete this filter hit \"Reply\" and change subject to \"[SpiderAlert] delete filter\" </p></body></html>"   
+            
+            info = []
+            info.append(msg)
+            info.append(msg_html)
+            
+            sm.sendConfirmationMail("DX Spot alert", info)
             #for selected_filterID in selection:
             #put all alerts into one mail
             
