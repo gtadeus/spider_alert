@@ -2,12 +2,27 @@
 
 import sys
 import os
+import csv
 from csv import reader
 from operator import itemgetter
 #import pandas as pd
 import glob
 import ntpath
 import SendMail
+
+def unicode_csv_reader(utf8_data):
+    csv_reader = csv.reader(utf8_data, delimiter=';')
+    for row in csv_reader:
+       yield [unicode(cell, 'latin_1') for cell in row]
+       
+def recursive_utf8_encode(lst):
+    ret = []
+    for x in lst:
+       if isinstance(x, str):
+          ret.append(x.encode('utf-8', 'ignore'))
+       else:
+          ret.append(recursive_utf8_encode(x))
+    return ret
 
 def column(matrix, i):
     return [row[i] for row in matrix]
@@ -18,10 +33,9 @@ def processAlerts():
         username = ntpath.basename(alertFile)
         print("username: " + username)
         sm = SendMail.SendMail(username)
-        file_alert = open(alertFile, "r")
+        file_alert = open(alertFile, "rt", encoding='latin-1')
+#       csv_reader = unicode_csv_reader(file_alert)
         csv_reader = reader(file_alert,  delimiter=';')
-        
-        #csv_reader.__next__()   # Skip header line
 
         csv_reader=sorted(csv_reader, key=itemgetter(filterID_col_nr))
         file_alert.close()
@@ -44,9 +58,6 @@ def processAlerts():
                 csv_reader_new.append(row)
             index+=1
 
-        #for c in csv_reader_new:
-        #    print(c)
-
         filterIDColumn=column(csv_reader_new, filterID_col_nr)
         uniqueFilterID = []
         [uniqueFilterID.append(i) for i in filterIDColumn if not uniqueFilterID.count(i)]
@@ -54,18 +65,24 @@ def processAlerts():
         
         for filterID in uniqueFilterID:
             selection = [row for row in csv_reader_new if row[filterID_col_nr] == filterID]
-            print(len(selection))
-            print(selection)
-            file_filter = open("filter/"+username, "r")
-            csv_reader_filter = reader(file_filter,  delimiter=';')
+            print("Number of Spots: " + str(len(selection)))
+            print(recursive_utf8_encode(selection))
+            
+            original_filter_row=""
+            try:
+                file_filter = open("filter/"+username, "r")
+                csv_reader_filter = reader(file_filter,  delimiter=';')
 
-            for row in csv_reader_filter:
-                #if not '#' in row:
+                for row in csv_reader_filter:
                     if filterID in row:     
                         original_filter_row = ";".join(row)
+                        
+            except (FileNotFoundError, IOError):
+                print("\n\nFileNotFoundError: cannot open filter file, user " + username + " not registered?")
+            
             msg = ""
             msg_html="<html><head></head><body><p>DX Spot(s):<br><br>"
-   
+             
             for s in selection:
                     msg += "DX de " + s[0] + ":\nDate/Time (UTC): " + s[1] + " " + s[2] + "\nCallsign: " + s[4] + "\nFrequency: " + s[3]  + "\nBand: " + s[5] + "\nType: " + s[6] + "\nRemark: " + s[7] + "\n\nFilterID=" + s[8] + "\n\nFilter settings:\nFilterID;Created on Date & Time (local);Frequency;Band;Callsign;Type;Remark\n"+original_filter_row+"\n\n**********\n\n"
                     

@@ -23,18 +23,7 @@ class SendMail(object):
         self.msg['From'] = self.sender
         self.msg['To'] = self.receiver
         
-        part1 = MIMEText(self.payload, 'plain')
-        part2 = MIMEText(self.payloadHTML, 'html')
-        
-        self.msg.attach(part1)
-        self.msg.attach(part2)
-         
         self.send()
-        return
-    def sendAlert(self, AlertList):
-        #for each alert in list
-        #put in mail body
-        #change subject
         return
     def sendConfirmationMail(self, subject, info):
         #confitm filter set
@@ -77,6 +66,14 @@ class SendMail(object):
         self.initMailText()
         return
     def send(self):
+        if self.payloadHTML is "":
+           self.payloadHTML = "<html><head></head><body>" + self.payload + "</body></html>"
+           self.payloadHTML=self.payloadHTML.replace('\n', '<br>')
+        part1=MIMEText(self.payload, 'plain')
+        part2=MIMEText(self.payloadHTML, 'html')
+
+        self.msg.attach(part1)
+        self.msg.attach(part2)
         s = smtplib.SMTP(self.mailserver) 
         try:
             #print(self.sender + " " + self.passwd)

@@ -37,7 +37,7 @@ def process_mailbox(M):
         decode = email.header.decode_header(msg['Subject'])[0]
         subject = str(decode[0]).lower()
         
-        from_mail = re.findall("\<(.*?)\>", msg['From'])[0]
+        
         
         date_tuple = email.utils.parsedate_tz(msg['Date'])
         if date_tuple:
@@ -53,6 +53,7 @@ def process_mailbox(M):
         
         if "[spideralert]" in subject:
             delete = True
+            from_mail = re.findall("\<(.*?)\>", msg['From'])[0]
             sm = SendMail.SendMail(from_mail)
             print("Message nr."+ str(int(num)))
             msg_body = msg.get_payload()
